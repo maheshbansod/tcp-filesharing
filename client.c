@@ -44,7 +44,8 @@ int main(int argc, char **argv)
 //    printf("Enter the name of the file to look for: ");
 //    fgets(buf, BSIZE, stdin);
     
-    write(sockfd, argv[1], sizeof(argv[1]));
+    strcpy(buf, argv[1]);
+    write(sockfd, buf, sizeof(buf));
     
     read(sockfd, buf, sizeof(buf));
     if(strcmp("(error)", buf)==0) {
@@ -62,6 +63,7 @@ int main(int argc, char **argv)
       } else {
         strcpy(buf, "(success)"); //notify server that it's ready for transfer.
         write(sockfd, buf, sizeof(buf));
+        printf("Created file '%s'\n", argv[1]);
         
         printf("Retrieving file from the server.\n");
         while(1) {
@@ -87,12 +89,19 @@ int main(int argc, char **argv)
     return 0;
 } 
 
-/*Replaces the slash character(/) with underscore(_) to prevent error while creating the file*/
+/*Replaces the illegal characters with underscore(_) to prevent error while creating the file*/
 void cleanFileName(char *fname) {
-  int i=0;
+  char illegals[] = {'*' , '"' ,'/','\\','[',']',':',';','|', '\0' };
+  int i=0,j;
   while(fname[i]!='\0') {
-    if(fname[i]=='/')
-      fname[i]='_';
+    j=0;
+    while(illegals[j]!='\0') {
+      if(fname[i]==illegals[j]) {
+        fname[i]='_';
+        break;
+      }
+      j++;
+    }
      
     i++;
   } 

@@ -77,8 +77,8 @@ int main()
         printf("Sending the file.\n");
         //int rc;
         while(!feof(fp)) {
-          fread(buf, 1, sizeof(buf), fp); //read and return the number of bytes read
-//          if(rc == 0) break;
+          fgets(buf, BSIZE, fp); //read and return the number of bytes read
+          //printf("buf: '%s'\nrc: '%d'\n", buf, rc);
           strcpy(stat, "(data)");
           write(connfd, stat, sizeof(stat));
           write(connfd, buf, sizeof(buf));
@@ -87,6 +87,7 @@ int main()
         write(connfd, stat, sizeof(stat));
         printf("File sent. Closing connection.\n");
       }
+      fclose(fp);
     }
     
     
