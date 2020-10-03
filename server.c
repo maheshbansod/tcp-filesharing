@@ -76,8 +76,10 @@ int main()
       } else { //assume success since the only other condition is handled already.
         printf("Sending the file.\n");
         //int rc;
-        while(!feof(fp)) {
-          fgets(buf, BSIZE, fp); //read and return the number of bytes read
+        while(1) {
+          if(fgets(buf, BSIZE, fp)==NULL) { //read and return the number of bytes read
+            break;
+          }
           //printf("buf: '%s'\nrc: '%d'\n", buf, rc);
           strcpy(stat, "(data)");
           write(connfd, stat, sizeof(stat));
