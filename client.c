@@ -63,13 +63,12 @@ int main(int argc, char **argv)
         strcpy(buf, "(success)"); //notify server that it's ready for transfer.
         write(sockfd, buf, sizeof(buf));
         
-        printf("Retrieving file from the server");
+        printf("Retrieving file from the server.\n");
         while(1) {
           read(sockfd, buf, sizeof(buf));
           if(strcmp(buf, "(data)")==0) { //write the data to the file
             read(sockfd, buf, sizeof(buf));
-            printf("writing: '%s'\n", buf);
-            fwrite(buf, 1, sizeof(buf), nf);
+            fwrite(buf, 1, strlen(buf), nf);
           } else if(strcmp(buf, "(done)")==0) {
             printf("Done.\nFile transferred.\n");
             break;
