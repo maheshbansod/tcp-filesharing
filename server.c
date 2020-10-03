@@ -10,7 +10,7 @@
 #include <errno.h>
 #include<unistd.h>
 #define BSIZE 200
-#define PORT 8080 
+#define PORT 8081 
 
 char *permissions(char*);
 
@@ -72,10 +72,20 @@ int main()
       
       read(connfd, buf, sizeof(buf));
       if(strcmp(buf, "(err-create)")==0) {
-        printf("Couldn't create the file on server.\nQuitting.\n");
-      } else { //assume success
-        printf("Sending file.\n");
-        
+        printf("Couldn't create the file on client.\nQuitting.\n");
+      } else { //assume success since the only other condition is handled already.
+        printf("Sending the file.\n");
+        //int rc;
+        while(!feof(fp)) {
+          fread(buf, 1, sizeof(buf), fp); //read and return the number of bytes read
+//          if(rc == 0) break;
+          strcpy(stat, "(data)");
+          write(connfd, stat, sizeof(stat));
+          write(connfd, buf, sizeof(buf));
+        }
+        strcpy(stat, "(done)");
+        write(connfd, stat, sizeof(stat));
+        printf("File sent. Closing connection.\n");
       }
     }
     

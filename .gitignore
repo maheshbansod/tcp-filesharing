@@ -1,4 +1,3 @@
-server
-client
-a.out
+serverbin/
+clientbin/
 testfile

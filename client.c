@@ -9,7 +9,7 @@
 #include<arpa/inet.h>
 
 #define BSIZE 200 
-#define PORT 8080 
+#define PORT 8081 
   
 
 void cleanFileName(char*);
@@ -64,6 +64,21 @@ int main(int argc, char **argv)
         write(sockfd, buf, sizeof(buf));
         
         printf("Retrieving file from the server");
+        while(1) {
+          read(sockfd, buf, sizeof(buf));
+          if(strcmp(buf, "(data)")==0) { //write the data to the file
+            read(sockfd, buf, sizeof(buf));
+            printf("writing: '%s'\n", buf);
+            fwrite(buf, 1, sizeof(buf), nf);
+          } else if(strcmp(buf, "(done)")==0) {
+            printf("Done.\nFile transferred.\n");
+            break;
+          } else {
+            printf("Unknown error occurred.\n");
+            break;
+          }
+        }
+        printf("Quitting.\n");
         fclose(nf);
       }
     }
@@ -79,6 +94,7 @@ void cleanFileName(char *fname) {
   while(fname[i]!='\0') {
     if(fname[i]=='/')
       fname[i]='_';
+     
     i++;
   } 
 }
