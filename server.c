@@ -49,11 +49,18 @@ int main()
     }
     
     read(connfd, buf, sizeof(buf));
+    char filename[BSIZE];
+    strcpy(filename, buf);
     
     printf("Recieved filename: %s\nChecking the file.\n", buf);
     
     char stat[BSIZE];
     strcpy(stat, permissions(buf));
+    FILE *fp = fopen(filename, "r");
+    if(fp == NULL) {
+      printf("File could not be opened for reading.\n");
+      strcat(stat, "\nServer could not open the file for reading.\n");
+    }
     if(strlen(stat)!=9) {
       strcpy(buf,"(error)");
       write(connfd, buf, sizeof(buf));
@@ -68,6 +75,7 @@ int main()
         printf("Couldn't create the file on server.\nQuitting.\n");
       } else { //assume success
         printf("Sending file.\n");
+        
       }
     }
     
